@@ -33,7 +33,7 @@ directories.forEach(directoryName => {
   const event = _.trim(match[1]).replace(/\(同人誌\)|\(同人CG集\)|\(成年コミック\)/g, '').trim();
   const author = _.trim(match[2]).replace('【', '[').replace('】', ']').trim();
   const title = _.trim(match[3]);
-  const original = _.trim(match[4]);
+  const original = _.trim(match[4]).replace(/\(オリジナル\)/g, '').trim();
   const suffix = _.trim(match[5]);
 
   // 正規化した新しいディレクトリ名
