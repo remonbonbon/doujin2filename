@@ -23,8 +23,8 @@ let numOfNotRenameFiles = 0;
 directories.forEach(directoryName => {
   const absDirectoryPath = path.join(ROOT_DIRECTORY, directoryName);
 
-  //-----------------------------   event     author   title  original    suffix
-  const match = directoryName.match(/^(\(.+\) *)?([\[【].+?[\]】]) *(.+?)( *\(.+\))?( *\[.+\])?$/);
+  //-----------------------------   event         author         title  original    suffix
+  const match = directoryName.match(/^(\(.+\) *)?([\[【].+?[\]】]) *(.+?)( *\(.+\)?)?( *\[.+\])?$/);
   if (!match) {
     // 本じゃない
     notBooks.push(directoryName);
@@ -33,7 +33,7 @@ directories.forEach(directoryName => {
   const event = _.trim(match[1]).replace(/\(同人誌\)|\(同人CG集\)|\(成年コミック\)/g, '').trim();
   const author = _.trim(match[2]).replace('【', '[').replace('】', ']').trim();
   const title = _.trim(match[3]);
-  const original = _.trim(match[4]).replace(/\(オリジナル\)/g, '').trim();
+  const original = _.trim(match[4]).replace(/\(オリジナル\)|\(よろず\)/g, '').replace(/\(ガールズ$/g, '(ガールズ&パンツァー)').trim();
   const suffix = _.trim(match[5]);
 
   // 正規化した新しいディレクトリ名
@@ -91,7 +91,7 @@ directories.forEach(directoryName => {
     // 画像ファイルをリネーム
     const newFileName = `${title}_${fileName}`;
     if (fileName.includes(title)) {
-      console.log(`"${fileName}" already includes "${title}"`.yellow);
+      // console.log(`"${fileName}" already includes "${title}"`.yellow);
       numOfNotRenameFiles++;
     } else {
       fs.renameSync(absFilePath, path.join(ROOT_DIRECTORY, directoryName, newFileName));
@@ -110,11 +110,11 @@ directories.forEach(directoryName => {
   }
 });
 
-console.log(`---------- Books (${_.size(directories)} directories)----------`.green);
+console.log(`---------- Books (${_.size(directories) - _.size(notBooks)} directories)----------`.green);
 console.log(`  Directory : ${ROOT_DIRECTORY}`.green);
 console.log(`  Rename    : ${numOfRenameDirectories} directories`.green);
-console.log(`  Not Rename: ${numOfNotRenameDirectories} directories`.green);
 console.log(`  Rename    : ${numOfRenameFiles} files`.green);
+console.log(`  Not Rename: ${numOfNotRenameDirectories} directories`.green);
 console.log(`  Not Rename: ${numOfNotRenameFiles} files`.green);
 
 if (!_.isEmpty(notBooks)) {
